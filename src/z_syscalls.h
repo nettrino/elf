@@ -8,18 +8,28 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#define z_errno	(*z_perrno())
+#define z_errno (*z_perrno())
 
-int	z_exit(int status);
-int	z_open(const char *pathname, int flags);
-int	z_close(int fd);
-int	z_lseek(int fd, off_t offset, int whence);
-ssize_t	z_read(int fd, void *buf, size_t count);
-ssize_t	z_write(int fd, const void *buf, size_t count);
-void	*z_mmap(void *addr, size_t length, int prot,
-		int flags, int fd, off_t offset);
-int	z_munmap(void *addr, size_t length);
-int	z_mprotect(void *addr, size_t length, int prot);
-int	*z_perrno(void);
+extern long syscall0(long);
+extern long syscall1(long, long);
+extern long syscall2(long, long, long);
+extern long syscall3(long, long, long, long);
+extern long syscall4(long, long, long, long, long);
+extern long syscall5(long, long, long, long, long, long);
+extern long syscall6(long, long, long, long, long, long, long);
+int         z_exit(int status);
+int         z_open(const char *pathname, int flags);
+int         z_openat(int dirfd, const char *pathname, int flags, mode_t mode);
+int         z_close(int fd);
+int         z_lseek(int fd, off_t offset, int whence);
+ssize_t     z_read(int fd, void *buf, size_t count);
+ssize_t     z_write(int fd, const void *buf, size_t count);
+#if defined(__aarch64__)
+#else
+void *z_mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+#endif
+int  z_munmap(void *addr, size_t length);
+int  z_mprotect(void *addr, size_t length, int prot);
+int *z_perrno(void);
 
 #endif /* Z_SYSCALLS_H */
